@@ -1,9 +1,63 @@
 @import 'tailwindcss';
 
+/* ------------------------------------------------------------------ *
+ * Fonts — Sohne (body/UI) + Aeonik (display/headings)
+ * ------------------------------------------------------------------ */
+
+/* ---- Sohne --------------------------------- */
+@font-face {
+    font-family: 'Sohne';
+    src: url('./assets/fonts/soehne/sohne-regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Sohne';
+    src: url('./assets/fonts/soehne/sohne-medium.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Sohne';
+    src: url('./assets/fonts/soehne/sohne-bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* ---- Aeonik ----------------------------------- */
+@font-face {
+    font-family: 'Aeonik';
+    src: url('./assets/fonts/aeonik/aeonik-regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Aeonik';
+    src: url('./assets/fonts/aeonik/aeonik-medium.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Aeonik';
+    src: url('./assets/fonts/aeonik/aeonik-bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
 
 @theme {
     /* ---- Typography ---------------------------------------------- */
-    --font-sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    --font-sans: 'Sohne', Arial, sans-serif;
+    --font-display: 'Aeonik', 'Sohne', Arial, sans-serif;
 
     /* ---- Neutrals ------------------------------------------------ */
     --color-cream: #f5f2ed;
