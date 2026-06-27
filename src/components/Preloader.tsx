@@ -17,9 +17,12 @@ export default function Preloader({ onReveal, onComplete }: PreloaderProps) {
   const count = useRef<HTMLSpanElement>(null)
 
   const done = useRef(onComplete)
-  done.current = onComplete
   const reveal = useRef(onReveal)
-  reveal.current = onReveal
+
+  useLayoutEffect(() => {
+    done.current = onComplete
+    reveal.current = onReveal
+  })
 
   useLayoutEffect(() => {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
