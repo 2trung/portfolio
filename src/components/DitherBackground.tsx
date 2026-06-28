@@ -50,6 +50,7 @@ interface DitherControls {
   intensity: number
   radius: number
   momentum: number
+  colorBg: string
   colorFg: string
   colorAccent: string
 }
@@ -69,6 +70,7 @@ function createUniforms(c: DitherControls) {
     waveFade: uniform(c.waveFade),
     waveStrength: uniform(c.waveStrength),
     flowStrength: uniform(c.flowStrength),
+    colorBg: uniform(new THREE.Color(c.colorBg)),
     colorFg: uniform(new THREE.Color(c.colorFg)),
     colorAccent: uniform(new THREE.Color(c.colorAccent)),
   }
@@ -138,7 +140,8 @@ function buildMaterial(
     ) as unknown as FloatNode
 
     const lit = mix(u.colorFg, u.colorAccent, chr)
-    return vec4(lit.mul(on).mul(reveal).mul(u.maxOpacity), 1)
+    const cover = on.mul(reveal).mul(u.maxOpacity)
+    return vec4(mix(u.colorBg, lit, cover), 1)
   })
 
   const mat = new THREE.MeshBasicNodeMaterial()
@@ -162,6 +165,7 @@ function syncUniforms(u: Uniforms, c: DitherControls): void {
   u.waveFade.value = c.waveFade
   u.waveStrength.value = c.waveStrength
   u.flowStrength.value = c.flowStrength
+  u.colorBg.value.set(c.colorBg)
   u.colorFg.value.set(c.colorFg)
   u.colorAccent.value.set(c.colorAccent)
 }
@@ -183,8 +187,9 @@ export default function DitherBackground() {
     intensity: { value: 1.3, min: 0.5, max: 1.5, step: 0.1 },
     radius: { value: 3, min: 0, max: 5, step: 0.1 },
     momentum: { value: 30, min: 10, max: 60, step: 1 },
+    colorBg: '#0e0d0c',
     colorFg: '#f5f2ed',
-    colorAccent: '#ff4d3d',
+    colorAccent: '#ffffff',
   }) as DitherControls
 
   const { viewport } = useThree()
