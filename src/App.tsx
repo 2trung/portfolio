@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import Preloader from './components/Preloader'
+import Preloader from './sections/Preloader'
+import Experience from './components/Experience'
 import Hero from './sections/Hero'
 
 function App() {
@@ -9,6 +10,7 @@ function App() {
   return (
     <>
       <Hero revealed={revealed} />
+      <Experience />
       {!loaded && (
         <Preloader
           onReveal={() => setRevealed(true)}
