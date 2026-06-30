@@ -1,8 +1,12 @@
 import { useEffect, useState } from 'react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Preloader from './sections/Preloader'
 import Experience from './components/Experience'
 import Lenis from 'lenis'
 import OpeningSequence from './sections/OpeningSequence'
+
+gsap.registerPlugin(ScrollTrigger)
 
 function App() {
   const [revealed, setRevealed] = useState(false)
