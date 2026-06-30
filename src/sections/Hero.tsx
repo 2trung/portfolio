@@ -19,7 +19,7 @@ interface HeroProps {
 const NAME = 'Trung Nguyen'
 
 const CONTACTS = [
-  { label: 'Email', href: 'mailto:hello@trungnguyen.dev' },
+  { label: 'Email', href: 'mailto:trung.nguyen@msn.com' },
   { label: 'GitHub', href: 'https://github.com/2trung' },
   { label: 'LinkedIn', href: '#' },
   { label: 'Instagram', href: '#' },
