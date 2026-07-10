@@ -83,6 +83,7 @@ interface OpeningSequenceProps {
 export default function OpeningSequence({ revealed }: OpeningSequenceProps) {
   const track = useRef<HTMLElement>(null)
   const screen = useRef<HTMLDivElement>(null)
+  const rotator = useRef<HTMLDivElement>(null)
   const window_ = useRef<HTMLDivElement>(null)
   const darken = useRef<HTMLDivElement>(null)
   const leftHandRef = useRef<HTMLDivElement>(null)
@@ -91,7 +92,16 @@ export default function OpeningSequence({ revealed }: OpeningSequenceProps) {
   const bottomTextRef = useRef<HTMLDivElement>(null)
 
   useLayoutEffect(() => {
-    const ctx = gsap.context(() => {
+    // Defer the build one tick. React StrictMode invokes this effect twice
+    // around a single commit (setup → cleanup → setup), and GSAP ScrollTriggers
+    // register asynchronously — so the first setup's trigger survives its
+    // cleanup and a second timeline ends up double-driving the shared hand and
+    // running-text transforms, freezing them off-screen. Deferring lets the
+    // cleanup cancel the throwaway first build, so exactly one timeline is ever
+    // created.
+    let ctx: ReturnType<typeof gsap.context> | undefined
+    const build = window.setTimeout(() => {
+      ctx = gsap.context(() => {
       const halfWidthPhase1 = 5
       const halfHeightPhase1 = 35
       const finalBarW = () => Math.min(window.innerWidth * 0.45, 220)
@@ -181,7 +191,7 @@ export default function OpeningSequence({ revealed }: OpeningSequenceProps) {
         1,
       )
       tl.to(
-        screen.current,
+        rotator.current,
         { rotation: 75, ease: 'power2.inOut', duration: 1 },
         1,
       )
@@ -213,19 +223,84 @@ export default function OpeningSequence({ revealed }: OpeningSequenceProps) {
         { yPercent: 0, ease: 'power2.out', duration: 0.5 },
         0.8,
       )
-    }, track)
 
-    return () => ctx.revert()
+      // Phase 4: the bar snaps the last 15° to a right angle, then the window
+      // grows outward from its centre in all four directions until each edge
+      // lands on a screen edge. Meanwhile the screen layer (hero, already
+      // black) cross-fades out, so the growing box opens onto the fixed
+      // About canvas behind the page while the mask edges stay crisp.
+      const REVEAL_AT = 2.4
+      // At 90° the window's local x spans the screen's vertical axis and
+      // local y the horizontal one. Tiny pad hides subpixel hairlines.
+      const pad = 1.02
+      const coverW = () => (window.innerHeight / 2) * pad
+      const coverH = () => (window.innerWidth / 2) * pad
+
+      tl.to(
+        rotator.current,
+        { rotation: 90, ease: 'power2.inOut', duration: 1 },
+        REVEAL_AT,
+      )
+      tl.to(
+        halfWindow,
+        {
+          hw: coverW,
+          hh: coverH,
+          ease: 'power3.inOut',
+          duration: 2,
+        },
+        REVEAL_AT,
+      )
+
+      // Cross-fade out partway through the zoom, finishing with it.
+      tl.to(
+        screen.current,
+        { autoAlpha: 0, ease: 'sine.inOut', duration: 1.8 },
+        REVEAL_AT + 0.5,
+      )
+
+      // Hands retreat to the sides, running text slides back off-screen.
+      tl.to(
+        leftHandRef.current,
+        { xPercent: -hideX, ease: 'power2.in', duration: 0.8 },
+        REVEAL_AT,
+      )
+      tl.to(
+        rightHandRef.current,
+        { xPercent: hideX, ease: 'power2.in', duration: 0.8 },
+        REVEAL_AT,
+      )
+      tl.to(
+        topTextRef.current,
+        { yPercent: -100, ease: 'power2.in', duration: 0.5 },
+        REVEAL_AT,
+      )
+      tl.to(
+        bottomTextRef.current,
+        { yPercent: 100, ease: 'power2.in', duration: 0.5 },
+        REVEAL_AT,
+      )
+
+      }, track)
+    }, 0)
+
+    return () => {
+      window.clearTimeout(build)
+      ctx?.revert()
+    }
   }, [])
 
   return (
-    <section ref={track} className='relative h-[300vh] w-full'>
+    <section
+      id='opening'
+      ref={track}
+      data-canvas-reveal
+      className='relative h-[400vh] w-full'
+    >
       <div className='sticky top-0 h-screen w-full overflow-hidden'>
-        {/* The hero "screen" + the box-shadow mask that hides it. */}
-        <div
-          ref={screen}
-          className='absolute inset-0 z-10 origin-center will-change-transform'
-        >
+        {/* The hero "screen". Never rotates, so it keeps covering the full
+            viewport behind the mask window at every angle. */}
+        <div ref={screen} className='absolute inset-0 z-10'>
           <Hero revealed={revealed} />
 
           {/* Dims the hero as it closes. */}
@@ -233,12 +308,18 @@ export default function OpeningSequence({ revealed }: OpeningSequenceProps) {
             ref={darken}
             className='pointer-events-none absolute inset-0 bg-black opacity-0'
           />
+        </div>
 
+        {/* Rotating mask layer — only the window spins, not the hero. */}
+        <div
+          ref={rotator}
+          className='pointer-events-none absolute inset-0 z-10 origin-center will-change-transform'
+        >
           {/* The lit window. Its giant box-shadow blacks out everything around
               it — resize the element and the "shutter" follows. */}
           <div
             ref={window_}
-            className='pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 will-change-[width,height]'
+            className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 will-change-[width,height]'
             style={{ boxShadow: `0 0 0 9999px ${MASK_COLOR}` }}
           />
         </div>
