@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import * as THREE from 'three/webgpu'
 import {
   Fn,
@@ -15,15 +17,20 @@ import {
   uniform,
   uniformArray,
   vec2,
-  vec4,
 } from 'three/tsl'
 import { useFrame, useThree } from '@react-three/fiber'
 import { useControls } from 'leva'
 import { LiquidFlow } from './liquidFlow'
 
+gsap.registerPlugin(ScrollTrigger)
+
 // Concrete TSL node type — `uniformArray(...).element()` is typed too loosely
 // to chain math onto, so we narrow the element back to its real shape.
 type FloatNode = ReturnType<typeof float>
+
+// `scene.backgroundNode` isn't on the base three type surface exposed through
+// R3F, so we widen the scene locally where we assign it.
+type NodeScene = THREE.Scene & { backgroundNode: unknown }
 
 const CELLS = 16
 const DITHER_STATES: number[][] = [
@@ -73,16 +80,19 @@ function createUniforms(c: DitherControls) {
     colorBg: uniform(new THREE.Color(c.colorBg)),
     colorFg: uniform(new THREE.Color(c.colorFg)),
     colorAccent: uniform(new THREE.Color(c.colorAccent)),
+    // Scroll-driven, not Leva-tuned — hides the dither over the About section.
+    visibility: uniform(1),
   }
 }
 
 type Uniforms = ReturnType<typeof createUniforms>
 
-/** Compile the TSL reveal + dither + liquid-flow graph into a node material. */
-function buildMaterial(
-  u: Uniforms,
-  liquidTex: THREE.Texture,
-): THREE.MeshBasicNodeMaterial {
+/**
+ * Compile the reveal + dither + liquid-flow graph into a single screen-space
+ * color node. It reads `screenUV`/`screenCoordinate`, so it's independent of
+ * the camera and can serve as the scene background behind everything else.
+ */
+function buildBackgroundNode(u: Uniforms, liquidTex: THREE.Texture) {
   // Flatten every state into one [state * 16 + cell] lookup table.
   const states = uniformArray(DITHER_STATES.flat(), 'float')
   const liquidField = texture(liquidTex)
@@ -140,15 +150,11 @@ function buildMaterial(
     ) as unknown as FloatNode
 
     const lit = mix(u.colorFg, u.colorAccent, chr)
-    const cover = on.mul(reveal).mul(u.maxOpacity)
-    return vec4(mix(u.colorBg, lit, cover), 1)
+    const cover = on.mul(reveal).mul(u.maxOpacity).mul(u.visibility)
+    return mix(u.colorBg, lit, cover)
   })
 
-  const mat = new THREE.MeshBasicNodeMaterial()
-  mat.colorNode = fragment()
-  mat.depthWrite = false
-  mat.depthTest = false
-  return mat
+  return fragment()
 }
 
 /** Mirror the current Leva values onto the live uniform nodes. */
@@ -192,23 +198,66 @@ export default function DitherBackground() {
     colorAccent: '#ffffff',
   }) as DitherControls
 
-  const { viewport } = useThree()
+  const scene = useThree((s) => s.scene)
 
-  // Display material + the liquid-flow sim
-  const { u, material, sim } = useMemo(() => {
+  // Background color node + the liquid-flow sim
+  const { u, node, sim } = useMemo(() => {
     const uniforms = createUniforms(controls)
     const s = new LiquidFlow()
     return {
       u: uniforms,
-      material: buildMaterial(uniforms, s.liquidTexture),
+      node: buildBackgroundNode(uniforms, s.liquidTexture),
       sim: s,
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const pointer = useRef({ x: 0, y: 0 })
 
+  // Install the dither as the scene background; restore on unmount.
+  useEffect(() => {
+    // Imperatively swap the scene background node — an intentional side effect
+    // on the R3F-owned scene, so the immutability lint doesn't apply.
+    /* eslint-disable react-hooks/immutability */
+    const target = scene as NodeScene
+    const prev = target.backgroundNode
+    target.backgroundNode = node
+    return () => {
+      target.backgroundNode = prev ?? null
+    }
+    /* eslint-enable react-hooks/immutability */
+  }, [scene, node])
+
   useEffect(() => syncUniforms(u, controls), [u, controls])
   useEffect(() => () => sim.dispose(), [sim])
+
+  // Fade the dither out just after phase 1 of the opening sequence (the
+  // shutter is closed by then, so the swap is invisible) and keep it hidden,
+  // giving the About reveal a clean dark backdrop.
+  useEffect(() => {
+    const section = document.querySelector<HTMLElement>('#opening')
+    if (!section) return
+
+    const ctx = gsap.context(() => {
+      // Scrubbed over the same scroll range as the opening timeline; the
+      // positions below mirror its 4.7-unit clock (phase 1 ends at t = 1).
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: true,
+          invalidateOnRefresh: true,
+        },
+      })
+      tl.to(u.visibility, { value: 0, duration: 0.4, ease: 'power2.out' }, 1)
+      // Zero-length placeholder pads the timeline out to the opening's full
+      // 4.7 units so the tween above lands at the same scroll fraction.
+      tl.set({}, {}, 4.7)
+    })
+
+    return () => ctx.revert()
+  }, [u])
 
   useEffect(() => {
     const onMove = (e: PointerEvent) => {
@@ -228,10 +277,5 @@ export default function DitherBackground() {
     })
   })
 
-  return (
-    <mesh scale={[viewport.width, viewport.height, 1]} frustumCulled={false}>
-      <planeGeometry args={[1, 1]} />
-      <primitive object={material} attach='material' />
-    </mesh>
-  )
+  return null
 }

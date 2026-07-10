@@ -5,6 +5,8 @@ import Preloader from './sections/Preloader'
 import Experience from './components/Experience'
 import Lenis from 'lenis'
 import OpeningSequence from './sections/OpeningSequence'
+// import About from './sections/About'
+import TechStack from './sections/TechStack'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -34,6 +36,7 @@ function App() {
   return (
     <>
       <OpeningSequence revealed={revealed} />
+      <TechStack />
       <Experience />
       {!loaded && (
         <Preloader
