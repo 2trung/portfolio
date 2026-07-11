@@ -1,7 +1,6 @@
 import { useLayoutEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import FeaturedWork from './FeaturedWork'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -86,7 +85,7 @@ export default function TechStack() {
         scrollTrigger: {
           trigger: root.current,
           start: 'top top',
-          end: '+=400%',
+          end: '+=250%',
           pin: true,
           scrub: 1,
           invalidateOnRefresh: true,
@@ -94,43 +93,11 @@ export default function TechStack() {
         },
       })
 
-      const STREAM = 1
       tl.fromTo(
         row,
         { x: () => window.innerWidth },
-        { x: () => -(row.offsetWidth + 160), ease: 'none', duration: STREAM },
+        { x: () => -(row.offsetWidth + 160), ease: 'none', duration: 1 },
         0,
-      )
-
-      const curl = root.current!.querySelector<HTMLElement>('.techstack-curl')!
-      const CURVE = 0.02 // steepness of the arms
-      const parabola = (v: number) => {
-        const pts: string[] = []
-        for (let x = 0; x <= 100; x += 5) {
-          const y = v + CURVE * (x - 50) ** 2
-          pts.push(`${x}% ${y.toFixed(2)}%`)
-        }
-        pts.push('100% 200%', '0% 200%')
-        return `polygon(${pts.join(', ')})`
-      }
-      gsap.set(curl, { clipPath: parabola(110) })
-
-      const REVEAL = 0.8
-      const proxy = { v: 110 }
-      tl.to(
-        proxy,
-        {
-          v: -60,
-          ease: 'power2.inOut',
-          duration: REVEAL,
-          onUpdate: () => gsap.set(curl, { clipPath: parabola(proxy.v) }),
-        },
-        STREAM,
-      ).fromTo(
-        '.techstack-featured',
-        { opacity: 0 },
-        { opacity: 1, ease: 'power1.out', duration: REVEAL * 0.3 },
-        STREAM + REVEAL * 0.7,
       )
 
       gsap.from('.techstack-title', {
@@ -154,7 +121,7 @@ export default function TechStack() {
     <section
       ref={root}
       id='techstack'
-      className='relative mt-[-100vh] h-screen w-full overflow-hidden bg-ink p-[2vh]'
+      className='relative mt-[-100vh] h-screen w-full bg-black p-[2vh]'
     >
       <div className='relative h-full w-full overflow-hidden rounded-4xl bg-cream'>
         <div className='flex h-full w-full items-center justify-center'>
@@ -184,20 +151,6 @@ export default function TechStack() {
             </div>
           ))}
         </div>
-      </div>
-
-      {/* Ink parabola — vertex rises, arms sweep down to the two bottom corners */}
-      <div
-        className='techstack-curl pointer-events-none absolute z-30 bg-ink'
-        style={{ inset: '-2vh', clipPath: 'inset(100% 0 0 0)' }}
-      />
-
-      {/* Featured work — fades in once the curls have nearly filled the screen */}
-      <div
-        className='techstack-featured absolute z-40'
-        style={{ inset: '-2vh', opacity: 0 }}
-      >
-        <FeaturedWork />
       </div>
     </section>
   )
