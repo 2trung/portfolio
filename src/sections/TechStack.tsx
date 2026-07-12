@@ -86,7 +86,7 @@ export default function TechStack() {
         scrollTrigger: {
           trigger: root.current,
           start: 'top top',
-          end: '+=400%',
+          end: '+=650%',
           pin: true,
           scrub: 1,
           invalidateOnRefresh: true,
@@ -103,7 +103,7 @@ export default function TechStack() {
       )
 
       const curl = root.current!.querySelector<HTMLElement>('.techstack-curl')!
-      const CURVE = 0.02 // steepness of the arms
+      const CURVE = 0.005
       const parabola = (v: number) => {
         const pts: string[] = []
         for (let x = 0; x <= 100; x += 5) {
@@ -131,6 +131,44 @@ export default function TechStack() {
         { opacity: 0 },
         { opacity: 1, ease: 'power1.out', duration: REVEAL * 0.3 },
         STREAM + REVEAL * 0.7,
+      )
+
+      const featuredIn = STREAM + REVEAL * 0.75
+      tl.fromTo(
+        '.featured-title',
+        { yPercent: 50, opacity: 0 },
+        { yPercent: 0, opacity: 1, duration: 0.35, ease: 'power3.out' },
+        featuredIn,
+      ).fromTo(
+        '.featured-head, .featured-row',
+        { yPercent: 60, opacity: 0 },
+        {
+          yPercent: 0,
+          opacity: 1,
+          duration: 0.3,
+          stagger: 0.06,
+          ease: 'power3.out',
+        },
+        featuredIn + 0.1,
+      )
+
+      const featured = root.current!.querySelector<HTMLElement>('#featured')!
+      const featuredTable =
+        root.current!.querySelector<HTMLElement>('.featured-table')!
+      tl.to(
+        featuredTable,
+        {
+          y: () =>
+            -Math.max(
+              0,
+              featuredTable.offsetTop +
+                featuredTable.offsetHeight -
+                featured.clientHeight,
+            ),
+          ease: 'none',
+          duration: 0.9,
+        },
+        '>+=0.15',
       )
 
       gsap.from('.techstack-title', {
@@ -186,13 +224,11 @@ export default function TechStack() {
         </div>
       </div>
 
-      {/* Ink parabola — vertex rises, arms sweep down to the two bottom corners */}
       <div
         className='techstack-curl pointer-events-none absolute z-30 bg-ink'
         style={{ inset: '-2vh', clipPath: 'inset(100% 0 0 0)' }}
       />
 
-      {/* Featured work — fades in once the curls have nearly filled the screen */}
       <div
         className='techstack-featured absolute z-40'
         style={{ inset: '-2vh', opacity: 0 }}

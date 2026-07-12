@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <rect width="800" height="600" fill="#f5f2ed"/>
+  <g fill="#211f1f">
+    <rect x="80" y="200" width="26" height="260"/>
+    <rect x="150" y="140" width="26" height="380"/>
+    <rect x="220" y="240" width="26" height="180"/>
+    <rect x="290" y="100" width="26" height="460"/>
+    <rect x="360" y="220" width="26" height="220"/>
+    <rect x="430" y="160" width="26" height="340"/>
+    <rect x="500" y="260" width="26" height="140"/>
+    <rect x="570" y="120" width="26" height="420"/>
+    <rect x="640" y="230" width="26" height="200"/>
+  </g>
+  <circle cx="710" cy="330" r="34" fill="#ee3335"/>
+  <text x="80" y="76" font-family="Helvetica, Arial, sans-serif" font-size="48" font-weight="700" fill="#211f1f" letter-spacing="10">PULSE</text>
+</svg>

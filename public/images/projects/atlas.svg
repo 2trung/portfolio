@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <rect width="800" height="600" fill="#211f1f"/>
+  <g>
+    <rect x="100" y="320" width="70" height="200" fill="#2d62ff"/>
+    <rect x="200" y="240" width="70" height="280" fill="#2d62ff"/>
+    <rect x="300" y="360" width="70" height="160" fill="#2d62ff"/>
+    <rect x="400" y="180" width="70" height="340" fill="#ee3335"/>
+    <rect x="500" y="280" width="70" height="240" fill="#2d62ff"/>
+    <rect x="600" y="140" width="70" height="380" fill="#2d62ff"/>
+  </g>
+  <text x="100" y="100" font-family="Helvetica, Arial, sans-serif" font-size="56" font-weight="700" fill="#f5f2ed" letter-spacing="6">ATLAS</text>
+</svg>
