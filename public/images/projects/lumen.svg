@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <rect width="800" height="600" fill="#f5f2ed"/>
+  <circle cx="560" cy="280" r="180" fill="#ee3335"/>
+  <rect x="60" y="64" width="220" height="14" fill="#211f1f"/>
+  <rect x="60" y="92" width="140" height="14" fill="#211f1f"/>
+  <text x="60" y="524" font-family="Helvetica, Arial, sans-serif" font-size="72" font-weight="700" fill="#211f1f" letter-spacing="2">LUMEN&#174;</text>
+</svg>

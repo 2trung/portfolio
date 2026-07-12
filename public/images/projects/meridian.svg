@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <rect width="800" height="600" fill="#ee3335"/>
+  <circle cx="400" cy="620" r="280" fill="#f5f2ed"/>
+  <circle cx="400" cy="620" r="200" fill="#ee3335"/>
+  <circle cx="400" cy="620" r="120" fill="#f5f2ed"/>
+  <text x="60" y="120" font-family="Helvetica, Arial, sans-serif" font-size="56" font-weight="700" fill="#f5f2ed" letter-spacing="8">MERIDIAN</text>
+</svg>

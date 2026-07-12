@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <rect width="800" height="600" fill="#2d62ff"/>
+  <g fill="none" stroke="#f5f2ed" stroke-width="3">
+    <circle cx="400" cy="660" r="140"/>
+    <circle cx="400" cy="660" r="230"/>
+    <circle cx="400" cy="660" r="320"/>
+    <circle cx="400" cy="660" r="410"/>
+  </g>
+  <text x="60" y="120" font-family="Helvetica, Arial, sans-serif" font-size="64" font-weight="700" fill="#f5f2ed" letter-spacing="4">NORDWIND</text>
+</svg>
