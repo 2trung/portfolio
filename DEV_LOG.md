@@ -50,4 +50,13 @@ the idea: your logos stream across the screen as you scroll while a big “Techs
 
 the fun part is the math is all cpu, basically free. the row scrolls horizontally on a pinned scrolltrigger, and every frame i just measure where each card is relative to the headline. the closer a card gets to the title, the more it lifts off the center line to clear it (so nothing ever overlaps the text), and it eases back down as it leaves — that’s the orbit curve. i also give cards a little scale bump right as they cross the middle of the screen so there’s a soft focal point in the center. no shaders, no particles, no webgpu. runs smooth everywhere, which is the whole point.
 
-lesson of the week: sometimes the fix isn’t optimizing the heavy thing, it’s having a lighter thing ready to take its place.
+
+## #5
+featured work section: the design is the classic table: four columns — website, category, services, year — with a massive “Featured Work” headline on top. i made the title do a little type trick: “Featured” is just an outline (transparent fill + text-stroke) and “Work” is solid, both bold and stretched to the full width of the screen. cheap to render, looks like i tried way harder than i did.
+
+the fun part is the hover. when you mouse over a row, a preview image of that project fades in and follows your cursor around. i used gsap quickTo for the x/y so the image trails the mouse with this smooth lag instead of being glued to it, and i feed the horizontal mouse velocity into a slight rotation so the card tilts in the direction you’re moving. tiny detail, sells the whole thing. also learned the hard way that you need to snap the preview to the cursor BEFORE the first fade-in, otherwise it flies in from wherever it was last time. one gsap.set and the jank is gone.
+
+the annoying part: this section doesn’t live on the page like a normal section. it sits inside the techstack pin from #4, behind that ink parabola that swallows the screen. so a regular scrolltrigger inside it just fires at the wrong time — the element is pinned at the top of the viewport the entire time, the trigger math is meaningless. took me a minute to accept that the reveal can’t belong to the section at all. it has to be part of the parent timeline. so right after the parabola covers everything, the same scrub that drove the logos now raises the title and cascades the rows in one by one.
+
+projects in the table are mock data with placeholder svgs for now. the site has a featured work section and no actual featured work. next step is filling it with real projects.
+

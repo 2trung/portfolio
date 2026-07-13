@@ -7,6 +7,8 @@ import Lenis from 'lenis'
 import OpeningSequence from './sections/OpeningSequence'
 // import About from './sections/About'
 import TechStack from './sections/TechStack'
+import Manifesto from './sections/Manifesto'
+import Footer from './sections/Footer'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -14,7 +16,6 @@ function App() {
   const [revealed, setRevealed] = useState(false)
   const [loaded, setLoaded] = useState(false)
 
-  // Smooth scroll (Lenis) driving GSAP's ticker + ScrollTrigger.
   useEffect(() => {
     const lenis = new Lenis()
     lenis.on('scroll', ScrollTrigger.update)
@@ -37,6 +38,8 @@ function App() {
     <>
       <OpeningSequence revealed={revealed} />
       <TechStack />
+      <Manifesto />
+      <Footer />
       <Experience />
       {!loaded && (
         <Preloader
