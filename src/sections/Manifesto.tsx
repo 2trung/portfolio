@@ -82,6 +82,20 @@ export default function Manifesto() {
               },
               '<',
             )
+
+          // The pin adds 300% of scroll distance, but triggers below it
+          // (footer) were created earlier (this one waits for fonts) and
+          // refresh in creation order — so they'd measure their start before
+          // this spacer is applied and fire 300% too early. Sort into
+          // document order, then recompute.
+          // isRefreshing exists at runtime (3.12+) but is missing from types.
+          const st = ScrollTrigger as typeof ScrollTrigger & {
+            isRefreshing?: boolean
+          }
+          if (!st.isRefreshing) {
+            ScrollTrigger.sort()
+            ScrollTrigger.refresh()
+          }
         },
       })
 
