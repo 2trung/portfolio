@@ -22,7 +22,7 @@ const CONTACTS = [
   { label: 'Email', href: 'mailto:trung.nguyen@msn.com' },
   { label: 'GitHub', href: 'https://github.com/2trung' },
   { label: 'LinkedIn', href: '#' },
-  { label: 'Instagram', href: '#' },
+  { label: 'Instagram', href: 'https://www.instagram.com/n2trung' },
 ]
 
 const WORDS = NAME.split(' ').map((word, wi) => ({

@@ -9,6 +9,7 @@ import OpeningSequence from './sections/OpeningSequence'
 import TechStack from './sections/TechStack'
 import Manifesto from './sections/Manifesto'
 import Footer from './sections/Footer'
+import DevNotice from './components/DevNotice'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -41,6 +42,7 @@ function App() {
       <Manifesto />
       <Footer />
       <Experience />
+      {loaded && <DevNotice />}
       {!loaded && (
         <Preloader
           onReveal={() => setRevealed(true)}
