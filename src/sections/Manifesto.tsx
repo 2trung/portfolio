@@ -114,14 +114,13 @@ export default function Manifesto() {
       id='manifesto'
       className='relative flex min-h-screen w-full flex-col items-center justify-center bg-cream px-6 text-center md:px-[5vw]'
     >
-      <p
-        className='manifesto-text mt-[5vh] font-display font-medium leading-[1.1]'
-        style={{ fontSize: 'clamp(2.25rem, 5vw, 5rem)' }}
-      >
-        Great products feel inevitable.
-      </p>
-
       <div className='mt-[5vh]'>
+        <p
+          className='manifesto-text font-display leading-[1.3]'
+          style={{ fontSize: 'clamp(1.4rem, 2.6vw, 2.6rem)' }}
+        >
+          Great products feel inevitable.
+        </p>
         <p
           className='manifesto-text font-display leading-[1.3]'
           style={{ fontSize: 'clamp(1.4rem, 2.6vw, 2.6rem)' }}

@@ -10,6 +10,7 @@ import TechStack from './sections/TechStack'
 import Manifesto from './sections/Manifesto'
 import Footer from './sections/Footer'
 import DevNotice from './components/DevNotice'
+import { setLenis } from './lenis'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -19,6 +20,7 @@ function App() {
 
   useEffect(() => {
     const lenis = new Lenis()
+    setLenis(lenis)
     lenis.on('scroll', ScrollTrigger.update)
 
     const raf = (time: number) => lenis.raf(time * 1000)
@@ -30,6 +32,7 @@ function App() {
 
     return () => {
       gsap.ticker.remove(raf)
+      setLenis(null)
       lenis.destroy()
       window.removeEventListener('load', onLoad)
     }
