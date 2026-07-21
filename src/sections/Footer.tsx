@@ -2,6 +2,7 @@ import { useLayoutEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { lenis } from '../lenis'
+import DistortedImage from '../components/DistortedImage'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -120,14 +121,13 @@ export default function Footer() {
           ))}
         </div>
       </div>
-              <div className='footer-image w-full overflow-hidden rounded-2xl will-change-transform'>
-            <img
-              src='/images/footer/starry_night.webp'
-              alt='Starry night artwork'  
-              loading='lazy'
-              className='block h-auto w-full max-h-[50vh] object-cover object-center'
-            />
-          </div>
+      <div className='footer-image w-full overflow-hidden rounded-2xl will-change-transform'>
+        <DistortedImage
+          src='/images/footer/starry_night.webp'
+          alt='Starry night artwork'
+          className='h-auto max-h-[50vh] object-cover object-center'
+        />
+      </div>
 
       <div className='footer-bar flex w-full items-center justify-between border-t border-cream/15 py-6 font-sans text-sm text-cream/60'>
         <span>©2026 — All rights reserved</span>
